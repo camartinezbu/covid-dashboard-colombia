@@ -8,6 +8,7 @@ sidebar <- dashboardSidebar(disable = T)
 
 ## Body ----
 body <- dashboardBody(
+  # Value Box row
   fluidRow(
     column(width = 3,
            valueBoxOutput(outputId = "n_confirmed",
@@ -28,6 +29,39 @@ body <- dashboardBody(
            valueBoxOutput(outputId = "n_dead",
                           width = NULL
            )
+    )
+  ),
+  # Age and Sex composition row
+  fluidRow(
+    column(width = 6,
+           tabBox(title = "Distribución por Edad",
+                  width = NULL,
+                  tabPanel("Confimados",
+                           plotOutput(outputId = "plot_age_total")
+                           ),
+                  tabPanel("Recuperados",
+                           plotOutput(outputId = "plot_age_recovered")
+                           ),
+                  tabPanel("Fallecidos",
+                           plotOutput(outputId = "plot_age_dead")
+                           )
+                  )
+      
+    ),
+    column(width = 6,
+           tabBox(title = "Distribución por Sexo",
+                  width = NULL,
+                  tabPanel("Confimados",
+                           plotOutput(outputId = "plot_sex_total")
+                  ),
+                  tabPanel("Recuperados",
+                           plotOutput(outputId = "plot_sex_recovered")
+                  ),
+                  tabPanel("Fallecidos",
+                           plotOutput(outputId = "plot_sex_dead")
+                  )
+           )
+        
     )
   )
 )
