@@ -7,10 +7,33 @@ header <- dashboardHeader(title = "Tablero Coronavirus")
 sidebar <- dashboardSidebar(disable = T)
 
 ## Body ----
-body <- dashboardBody("Hola Mundo")
+body <- dashboardBody(
+  fluidRow(
+    column(width = 3,
+           valueBoxOutput(outputId = "n_confirmed",
+                          width = NULL
+           )
+    ),
+    column(width = 3,
+           valueBoxOutput(outputId = "n_active",
+                          width = NULL
+           )
+    ),
+    column(width = 3,
+           valueBoxOutput(outputId = "n_recovered",
+                          width = NULL
+           )
+    ),
+    column(width = 3,
+           valueBoxOutput(outputId = "n_dead",
+                          width = NULL
+           )
+    )
+  )
+)
 
 
-## ShinuUI ----
+## ShinyUI ----
 shinyUI(
-    dashboardPage(header, sidebar, body) 
+    dashboardPage(header, sidebar, body, skin = "black") 
 )
