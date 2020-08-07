@@ -20,6 +20,9 @@ body <- dashboardBody(
   # Value Box row
   tabItems(
     tabItem(tabName = "overview",
+      fluidRow(div(textOutput(outputId = "report_date"),
+                    style = "color:red; text-align: center;
+                    font-weight: bold; padding-bottom: 10px;")),
       fluidRow(
         column(width = 3,
                valueBoxOutput(outputId = "n_confirmed",
@@ -74,8 +77,7 @@ body <- dashboardBody(
                )
             
         )
-      ),
-      textOutput(outputId = "report_date")
+      )
     ),
     tabItem(tabName = "cases",
             "Test")
