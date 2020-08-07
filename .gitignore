@@ -1,1 +1,4 @@
 *.csv
+geometry/MGN*
+geometry/shape_municipio/
+geometry/*.zip

@@ -18,7 +18,8 @@ data <- read_csv("../data/data.csv") %>%
                                       Sexo %in% c("F", "f") ~ "Femenino")) %>%
     mutate(Tipo_corregido = case_when(Tipo == "Importado" ~ "Importado",
                                       Tipo %in% c("Relacionado", "RELACIONADO") ~ "Relacionado",
-                                      Tipo %in% c("En estudio", "EN ESTUDIO") ~ "En estudio"))
+                                      Tipo %in% c("En estudio", "EN ESTUDIO") ~ "En estudio")) %>%
+    mutate(`Codigo departamento` = str_pad(`Codigo departamento`, width = 2, pad = "0", side = "left"))
 
 data_active <- data %>% filter(atención %in% c("Hospital", "Hospital UCI", "Casa"))
 
