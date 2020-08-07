@@ -15,7 +15,10 @@ data <- read_csv("../data/data.csv") %>%
                                   Edad >= 90 ~ "90 o >"
                                   )) %>%
     mutate(Sexo_corregido = case_when(Sexo %in% c("M", "m") ~ "Masculino",
-                                      Sexo %in% c("F", "f") ~ "Femenino"))
+                                      Sexo %in% c("F", "f") ~ "Femenino")) %>%
+    mutate(Tipo_corregido = case_when(Tipo == "Importado" ~ "Importado",
+                                      Tipo %in% c("Relacionado", "RELACIONADO") ~ "Relacionado",
+                                      Tipo %in% c("En estudio", "EN ESTUDIO") ~ "En estudio"))
 
 data_active <- data %>% filter(atención %in% c("Hospital", "Hospital UCI", "Casa"))
 
@@ -167,12 +170,20 @@ shinyServer(function(input, output) {
     
     # Cases by type plot
     output$plot_type_cases <- renderPlot({
-        
+        ggplot(data %>% count(Tipo_corregido),
+               aes(x = 0, y = n, fill = Tipo_corregido)) +
+            geom_bar(width = 1, stat = "identity") +
+            coord_polar("y", start = 0) +
+            theme_minimal()
     })
     
     # Cases by status plot
     output$plot_status_cases <- renderPlot({
-        
+        ggplot(data %>% count(Estado),
+               aes(x = 0, y = n, fill = Estado)) +
+            geom_bar(width = 1, stat = "identity") +
+            coord_polar("y", start = 0) +
+            theme_minimal()
     })
     
 })

@@ -78,40 +78,41 @@ body <- dashboardBody(
       ),
       # Evolution of cases
       fluidRow(
-        column(width = 8,
-               tabBox(title = "Históricos de casos reportados",
-                      width = NULL,
-                      tabPanel("Acumulados",
-                               plotOutput(outputId = "plot_cum_cases")
-                      ),
-                      tabPanel("Confirmados",
-                               plotOutput(outputId = "plot_daily_confirmed")
-                      ),
-                      tabPanel("Recuperados",
-                               plotOutput(outputId = "plot_daily_recovered")
-                      ),
-                      tabPanel("Fallecidos",
-                               plotOutput(outputId = "plot_daily_dead")
-                      )
-               )
-        ),
-        column(width = 4,
-               fluidRow(
-                 box(title = "Distribución por tipo",
-                     "Gráfico tipo"
-                     )
+        tabBox(title = "Históricos de casos reportados",
+               width = 12,
+               tabPanel("Acumulados",
+                        plotOutput(outputId = "plot_cum_cases")
                ),
-               fluidRow(
-                 box(title = "Distribución por estado de casos",
-                     "Gráfico estado")
+               tabPanel("Confirmados",
+                        plotOutput(outputId = "plot_daily_confirmed")
+               ),
+               tabPanel("Recuperados",
+                        plotOutput(outputId = "plot_daily_recovered")
+               ),
+               tabPanel("Fallecidos",
+                        plotOutput(outputId = "plot_daily_dead")
                )
-
         )
       ),
-      # Map of distribution by department
+      # Row with map, type and cases
       fluidRow(
-        box(title = "Distribución por departamentos y distritos especiales",
-            "Mapa")
+        column(width = 6,
+               box(title = "Distribución por departamentos y distritos especiales",
+                   width = NULL,
+                   "Mapa")
+        ),
+        column(width = 6,
+               tabBox(title = "Distribución por estado y tipo",
+                      width = NULL,
+                      tabPanel("Estado",
+                               plotOutput(outputId = "plot_status_cases")
+                      ),
+                      tabPanel("Tipo",
+                               plotOutput(outputId = "plot_type_cases")
+                      )
+               )
+          
+        )
       )
     ),
     tabItem(tabName = "cases",
