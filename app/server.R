@@ -23,6 +23,12 @@ data_dead <- data %>% filter(atención == "Fallecido")
 
 # Server
 shinyServer(function(input, output) {
+    # Report date
+    output$report_date <- renderText({
+        paste0("Fecha del reporte: ",
+               format(max(data$`fecha reporte web`, na.rm = T), format = "%d/%m/%Y"))
+    })
+    
     # Value Boxes
     output$n_confirmed <- renderValueBox({
         valueBox(value = nrow(data), 

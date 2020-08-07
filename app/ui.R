@@ -1,7 +1,7 @@
 # User interface using shiny and shinydashboard
 
 ## Header ----
-header <- dashboardHeader(title = "Tablero Coronavirus",
+header <- dashboardHeader(title = paste("Tablero Coronavirus"),
                           dropdownMenu(type = "messages",
                                        messageItem(from = "camartinezbu",
                                                    message = "Haz clic para ver el código fuente.",
@@ -75,8 +75,7 @@ body <- dashboardBody(
             
         )
       ),
-      paste0("Fecha del reporte: ",
-            format(max(data$`Fecha diagnostico`, na.rm = T), format = "%d/%m/%Y"))
+      textOutput(outputId = "report_date")
     ),
     tabItem(tabName = "cases",
             "Test")
