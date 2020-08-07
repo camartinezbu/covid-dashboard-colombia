@@ -1,4 +1,6 @@
 # Load data
+
+## Database
 data <- read_csv("../data/data.csv") %>%
     replace_with_na(replace = list('Fecha de muerte'= "-", atención = "N/A")) %>%
     mutate(rango_edad = case_when(between(Edad, 0, 9) ~ "0-9",
@@ -21,10 +23,12 @@ data_recovered <- data %>% filter(atención == "Recuperado")
 
 data_dead <- data %>% filter(atención == "Fallecido")
 
-n_cases_positive <- data %>%
+## Summary tables
+
+n_cases_confirmed <- data %>%
     group_by(`fecha reporte web`) %>%
-    summarise(daily_cases_positive = n()) %>%
-    mutate(cum_cases_positive = cumsum(daily_cases_positive))
+    summarise(daily_cases_confirmed = n()) %>%
+    mutate(cum_cases_confirmed = cumsum(daily_cases_confirmed))
 
 n_cases_recovered <- data_recovered %>%
     group_by(`Fecha recuperado`) %>%
@@ -36,16 +40,24 @@ n_cases_dead <- data_dead %>%
     summarise(daily_cases_dead = n()) %>%
     mutate(cum_cases_dead = cumsum(daily_cases_dead))
 
-n_cases <- n_cases_positive %>%
+n_cases <- n_cases_confirmed %>%
     left_join(n_cases_recovered, by = c("fecha reporte web" = "Fecha recuperado")) %>%
-    left_join(n_cases_dead, by = c("fecha reporte web" = "Fecha de muerte"))
+    left_join(n_cases_dead, by = c("fecha reporte web" = "Fecha de muerte")) %>%
+    pivot_longer(cols = -`fecha reporte web`, names_to = "type", values_to = "values")
+
+## Relevant constants
+
+start_time <- as.POSIXct("03-06-2020", tz = "UTC", format = "%d-%m-%Y")
+end_time <- max(data$`fecha reporte web`, na.rm = T)
+
+start_end <- c(start_time, end_time)
 
 # Server
 shinyServer(function(input, output) {
     # Report date
     output$report_date <- renderText({
         paste0("Actualizado hasta el reporte del ",
-               format(max(data$`fecha reporte web`, na.rm = T), format = "%d de %B de %Y"))
+               format(end_time, format = "%d/%m/%Y"))
     })
     
     # Value Boxes
@@ -78,56 +90,79 @@ shinyServer(function(input, output) {
     })
     
     # Cases by Age plots
-    output$plot_age_total <- renderPlot({
+    create_plot_age <- function(data) {
         ggplot(data, aes(x = rango_edad, fill = rango_edad)) +
-            geom_bar() + theme_minimal() +
+            geom_bar() + 
+            theme_minimal() +
             theme(legend.position = "none")
+    }
+    
+    output$plot_age_confirmed <- renderPlot({
+        create_plot_age(data)
     })
     
     output$plot_age_recovered <- renderPlot({
-        ggplot(data_recovered, aes(x = rango_edad, fill = rango_edad)) +
-            geom_bar() + theme_minimal() +
-            theme(legend.position = "none")
+        create_plot_age(data_recovered)
     })
     
     output$plot_age_dead <- renderPlot({
-        ggplot(data_dead, aes(x = rango_edad, fill = rango_edad)) +
-            geom_bar() + theme_minimal() +
-            theme(legend.position = "none")
+        create_plot_age(data_dead)
     })
     
     # Cases by sex plots
-    output$plot_sex_total <- renderPlot({
+    create_plot_sex <- function(data){
         ggplot(data %>% count(Sexo_corregido),
-               aes(x = 0, y = n, fill = Sexo_corregido)) +
-            geom_bar(width = 1, stat = "identity") +
-            coord_polar("y", start = 0) +
-            theme_minimal()
+           aes(x = 0, y = n, fill = Sexo_corregido)) +
+        geom_bar(width = 1, stat = "identity") +
+        coord_polar("y", start = 0) +
+        theme_minimal()
+    }
+    
+    output$plot_sex_confirmed <- renderPlot({
+        create_plot_sex(data)
     })
 
     output$plot_sex_recovered <- renderPlot({
-        ggplot(data_recovered %>% count(Sexo_corregido),
-               aes(x = 0, y = n, fill = Sexo_corregido)) +
-            geom_bar(width = 1, stat = "identity") +
-            coord_polar("y", start = 0) +
-            theme_minimal()
+        create_plot_sex(data_recovered)
     })
 
     output$plot_sex_dead <- renderPlot({
-        ggplot(data_dead %>% count(Sexo_corregido),
-               aes(x = 0, y = n, fill = Sexo_corregido)) +
-            geom_bar(width = 1, stat = "identity") +
-            coord_polar("y", start = 0) +
-            theme_minimal()
+        create_plot_sex(data_dead)
     })
     
     # Reported cases historic plots
     output$plot_cum_cases <- renderPlot({
-        
+        ggplot(n_cases %>% filter(type %in% c("cum_cases_confirmed", 
+                                              "cum_cases_recovered",
+                                              "cum_cases_dead")),
+               aes(x = `fecha reporte web`, y = values, color = type)) +
+            geom_line() +
+            theme_minimal()
+            
     })
     
-    output$plot_daily_cases <- renderPlot({
-        
+    create_plot_daily <- function(data, x, y, color) {
+        ggplot(data,
+               aes_string(x = x, y = y)) +
+            geom_line(col = color) + # If I want line graph
+            # geom_bar(fill = color) + # If I want bar graph
+            # geom_area(fill = color) + # If I want area graph
+            theme_minimal()
+    }
+    
+    output$plot_daily_confirmed <- renderPlot({
+        create_plot_daily(n_cases_confirmed, "`fecha reporte web`", 
+                          "daily_cases_confirmed", "#F8766D")
+    })
+    
+    output$plot_daily_recovered <- renderPlot({
+        create_plot_daily(n_cases_recovered, "`Fecha recuperado`",
+                          "daily_cases_recovered", "#619CFF")
+    })
+    
+    output$plot_daily_dead <- renderPlot({
+        create_plot_daily(n_cases_dead, "`Fecha de muerte`",
+                          "daily_cases_dead", "#00BA38")
     })
     
     # Cases by type plot

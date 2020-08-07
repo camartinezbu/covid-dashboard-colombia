@@ -51,7 +51,7 @@ body <- dashboardBody(
                tabBox(title = "Distribución por Edad",
                       width = NULL,
                       tabPanel("Confimados",
-                               plotOutput(outputId = "plot_age_total")
+                               plotOutput(outputId = "plot_age_confirmed")
                                ),
                       tabPanel("Recuperados",
                                plotOutput(outputId = "plot_age_recovered")
@@ -65,7 +65,7 @@ body <- dashboardBody(
                tabBox(title = "Distribución por Sexo",
                       width = NULL,
                       tabPanel("Confimados",
-                               plotOutput(outputId = "plot_sex_total")
+                               plotOutput(outputId = "plot_sex_confirmed")
                       ),
                       tabPanel("Recuperados",
                                plotOutput(outputId = "plot_sex_recovered")
@@ -82,16 +82,16 @@ body <- dashboardBody(
                tabBox(title = "Históricos de casos reportados",
                       width = NULL,
                       tabPanel("Acumulados",
-                               "Gráfico acumulados"
+                               plotOutput(outputId = "plot_cum_cases")
                       ),
                       tabPanel("Confirmados",
-                               "Gráfico confimados diarios"
+                               plotOutput(outputId = "plot_daily_confirmed")
                       ),
                       tabPanel("Recuperados",
-                               "Gráfico recuperados diarios"
+                               plotOutput(outputId = "plot_daily_recovered")
                       ),
                       tabPanel("Fallecidos",
-                               "Gráfico fallecidos diarios"
+                               plotOutput(outputId = "plot_daily_dead")
                       )
                )
         ),
