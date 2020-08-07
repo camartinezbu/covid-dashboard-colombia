@@ -1,7 +1,7 @@
 # User interface using shiny and shinydashboard
 
 ## Header ----
-header <- dashboardHeader(title = paste("Tablero Coronavirus"),
+header <- dashboardHeader(title = paste("Covid-19 en Colombia"),
                           dropdownMenu(type = "messages",
                                        messageItem(from = "camartinezbu",
                                                    message = "Haz clic para ver el código fuente.",
@@ -10,7 +10,7 @@ header <- dashboardHeader(title = paste("Tablero Coronavirus"),
 ## Sidebar ----
 sidebar <- dashboardSidebar(
   sidebarMenu(
-    menuItem("Panorama", tabName = "overview"),
+    menuItem("Panorama general", tabName = "overview"),
     menuItem("Casos", tabName = "cases")
   )
 )
@@ -60,7 +60,6 @@ body <- dashboardBody(
                                plotOutput(outputId = "plot_age_dead")
                                )
                       )
-          
         ),
         column(width = 6,
                tabBox(title = "Distribución por Sexo",
@@ -75,8 +74,44 @@ body <- dashboardBody(
                                plotOutput(outputId = "plot_sex_dead")
                       )
                )
-            
         )
+      ),
+      # Evolution of cases
+      fluidRow(
+        column(width = 8,
+               tabBox(title = "Históricos de casos reportados",
+                      width = NULL,
+                      tabPanel("Acumulados",
+                               "Gráfico acumulados"
+                      ),
+                      tabPanel("Confirmados",
+                               "Gráfico confimados diarios"
+                      ),
+                      tabPanel("Recuperados",
+                               "Gráfico recuperados diarios"
+                      ),
+                      tabPanel("Fallecidos",
+                               "Gráfico fallecidos diarios"
+                      )
+               )
+        ),
+        column(width = 4,
+               fluidRow(
+                 box(title = "Distribución por tipo",
+                     "Gráfico tipo"
+                     )
+               ),
+               fluidRow(
+                 box(title = "Distribución por estado de casos",
+                     "Gráfico estado")
+               )
+
+        )
+      ),
+      # Map of distribution by department
+      fluidRow(
+        box(title = "Distribución por departamentos y distritos especiales",
+            "Mapa")
       )
     ),
     tabItem(tabName = "cases",
