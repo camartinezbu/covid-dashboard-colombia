@@ -99,7 +99,7 @@ body <- dashboardBody(
         column(width = 6,
                box(title = "Distribución por departamentos y distritos especiales",
                    width = NULL,
-                   "Mapa")
+                   leafletOutput(outputId = "map_department_cases"))
         ),
         column(width = 6,
                tabBox(title = "Distribución por estado y tipo",

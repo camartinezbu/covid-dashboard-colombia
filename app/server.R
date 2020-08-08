@@ -27,7 +27,7 @@ data_recovered <- data %>% filter(atención == "Recuperado")
 
 data_dead <- data %>% filter(atención == "Fallecido")
 
-## Summary tables
+## Summary tables national
 
 n_cases_confirmed <- data %>%
     group_by(`fecha reporte web`) %>%
@@ -49,12 +49,45 @@ n_cases <- n_cases_confirmed %>%
     left_join(n_cases_dead, by = c("fecha reporte web" = "Fecha de muerte")) %>%
     pivot_longer(cols = -`fecha reporte web`, names_to = "type", values_to = "values")
 
+## Summary tables by department
+
+n_cases_confirmed_department <- data %>%
+    group_by(`Codigo departamento`) %>%
+    summarise(total_cases_confirmed = n())
+
+n_cases_recovered_department <- data_recovered %>%
+    group_by(`Codigo departamento`) %>%
+    summarise(total_cases_recovered = n())
+
+n_cases_dead_department <- data_dead %>%
+    group_by(`Codigo departamento`) %>%
+    summarise(total_cases_dead = n())
+
+n_cases_department <- n_cases_confirmed_department %>%
+    left_join(n_cases_recovered_department, by = "Codigo departamento") %>%
+    left_join(n_cases_dead_department, by = "Codigo departamento") %>%
+    mutate(log_total_cases_confirmed = log(total_cases_confirmed))
+
+## Department marker points
+
+department_marker_points <- sf::st_read("../geometry/marker_points.shp")
+
+n_cases_department_shp <- department_marker_points %>%
+    left_join(n_cases_department, by = c("DPTO_CCDGO" = "Codigo departamento")) %>%
+    mutate(label = paste(sep = "</br>",
+                         paste0("<b>", DPTO_CNMBR, "</b>"),
+                         paste0("Casos confirmados: ", total_cases_confirmed),
+                         paste0("Casos recuperados: ", total_cases_recovered),
+                         paste0("Fallecidos: ", total_cases_dead)
+                         ))
+
 ## Relevant constants
 
 start_time <- as.POSIXct("03-06-2020", tz = "UTC", format = "%d-%m-%Y")
 end_time <- max(data$`fecha reporte web`, na.rm = T)
 
 start_end <- c(start_time, end_time)
+
 
 # Server
 shinyServer(function(input, output) {
@@ -167,6 +200,18 @@ shinyServer(function(input, output) {
     output$plot_daily_dead <- renderPlot({
         create_plot_daily(n_cases_dead, "`Fecha de muerte`",
                           "daily_cases_dead", "#00BA38")
+    })
+    
+    # Distribution bu department map
+    
+    output$map_department_cases <- renderLeaflet({
+        leaflet(n_cases_department_shp) %>%
+            addProviderTiles("CartoDB.PositronNoLabels") %>%
+            addCircleMarkers(radius = ~log_total_cases_confirmed*2/3,
+                             stroke = F,
+                             fillOpacity = 0.5,
+                             color = "red",
+                             label = lapply(n_cases_department_shp$label, htmltools::HTML))
     })
     
     # Cases by type plot

@@ -1,7 +1,7 @@
 # Installing and loading some useful packages ----
 
 list_of_packages <- c("tidyverse", "lubridate", "sf", "leaflet", "shiny",
-                    "shinydashboard", "naniar", "scales")
+                    "shinydashboard", "naniar", "htmltools")
 
 for (i in list_of_packages) {
   if(!require(i, character.only = T)) {install.packages(i)}
