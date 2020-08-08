@@ -17,7 +17,7 @@ First, set your working directory to the folder in which you downloaded or clone
 
 Then, load and run the `preparations.R` file up until line 32. If you want to know how the included shapefile was created, run lines 32 to 43.
 
-After that, you can run the dashboard by opening either `ui.R` or `server.R` and clicking the Run App button from withing RStudio or by typing 
+After that, you can run the dashboard by opening either `ui.R` or `server.R` and clicking the Run App button from withing RStudio or by typing:
 
 ```r
 shiny::runApp("app")
