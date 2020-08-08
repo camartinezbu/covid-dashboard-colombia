@@ -22,7 +22,7 @@ Sys.setlocale("LC_TIME", "es_ES.UTF-8")
 
 # Set working directory ----
 
-setwd("~/Documents/GitHub/covid-dashboard-replica-colombia")
+setwd("~/Documents/GitHub/covid-dashboard-colombia")
 
 # Downloading data from INS ----
 
