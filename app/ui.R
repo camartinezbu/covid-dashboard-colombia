@@ -5,7 +5,8 @@ header <- dashboardHeader(title = paste("Covid-19 en Colombia"),
                           dropdownMenu(type = "messages",
                                        messageItem(from = "camartinezbu",
                                                    message = "Haz clic para ver el código fuente.",
-                                                   href = "https://github.com/camartinezbu/covid-dashboard-replica-colombia")))
+                                                   href = "https://github.com/camartinezbu/covid-dashboard-replica-colombia",
+                                                   icon = icon("question-circle", "fa-2x"))))
 
 ## Sidebar ----
 sidebar <- dashboardSidebar(disable = T
@@ -22,7 +23,8 @@ body <- dashboardBody(
     # tabItem(tabName = "overview",
       fluidRow(div(textOutput(outputId = "report_date"),
                     style = "color:red; text-align: center;
-                    font-weight: bold; padding-bottom: 10px;")),
+                    font-weight: bold; padding-bottom: 10px;
+                    font-size: 1.5em")),
       fluidRow(
         column(width = 3,
                valueBoxOutput(outputId = "n_confirmed",
@@ -50,7 +52,7 @@ body <- dashboardBody(
         column(width = 6,
                tabBox(title = "Distribución por Edad",
                       width = NULL,
-                      tabPanel("Confimados",
+                      tabPanel("Confirmados",
                                plotOutput(outputId = "plot_age_confirmed")
                                ),
                       tabPanel("Recuperados",
@@ -64,7 +66,7 @@ body <- dashboardBody(
         column(width = 6,
                tabBox(title = "Distribución por Sexo",
                       width = NULL,
-                      tabPanel("Confimados",
+                      tabPanel("Confirmados",
                                plotOutput(outputId = "plot_sex_confirmed")
                       ),
                       tabPanel("Recuperados",
@@ -97,7 +99,7 @@ body <- dashboardBody(
       # Row with map, type and cases
       fluidRow(
         column(width = 6,
-               box(title = "Distribución por departamentos y distritos especiales",
+               box(title = "Distribución por departamentos",
                    width = NULL,
                    leafletOutput(outputId = "map_department_cases"))
         ),
