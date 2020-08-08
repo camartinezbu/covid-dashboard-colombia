@@ -8,18 +8,18 @@ header <- dashboardHeader(title = paste("Covid-19 en Colombia"),
                                                    href = "https://github.com/camartinezbu/covid-dashboard-replica-colombia")))
 
 ## Sidebar ----
-sidebar <- dashboardSidebar(
-  sidebarMenu(
-    menuItem("Panorama general", tabName = "overview"),
-    menuItem("Casos", tabName = "cases")
-  )
+sidebar <- dashboardSidebar(disable = T
+  # sidebarMenu(
+  #   menuItem("Panorama general", tabName = "overview"),
+  #   menuItem("Casos", tabName = "cases")
+  # )
 )
 
 ## Body ----
 body <- dashboardBody(
   # Value Box row
-  tabItems(
-    tabItem(tabName = "overview",
+  #tabItems(
+    # tabItem(tabName = "overview",
       fluidRow(div(textOutput(outputId = "report_date"),
                     style = "color:red; text-align: center;
                     font-weight: bold; padding-bottom: 10px;")),
@@ -114,10 +114,10 @@ body <- dashboardBody(
           
         )
       )
-    ),
-    tabItem(tabName = "cases",
-            "Test")
-  )
+  #  ),
+  #   tabItem(tabName = "cases",
+  #           "Test")
+  # )
 )
 
 
